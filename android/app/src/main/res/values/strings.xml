@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <string name="app_name">spotifyclone</string>
+    <string name="facebook_app_id">1456276545106056</string>
+    <string name="fb_login_protocol_scheme">fb1456276545106056</string>
+    <string name="facebook_client_token">9c0375fe886f41e235cc3d649a9b711c</string>
+</resources>
