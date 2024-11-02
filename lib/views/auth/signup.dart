@@ -95,7 +95,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
     try{
       final LoginResult loginresult = await FacebookAuth.instance.login();
-      final OAuthCredential facebookCrendential = FacebookAuthProvider.credential(loginresult.accessToken!.token);
+      final OAuthCredential facebookCrendential = FacebookAuthProvider.credential(loginresult.accessToken!.tokenString);
       await FirebaseAuth.instance.signInWithCredential(facebookCrendential);
       Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
     }on FirebaseAuthException catch (e){

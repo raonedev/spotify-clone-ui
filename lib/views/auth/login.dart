@@ -1,3 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -22,17 +26,21 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   Future<void> signin({required String email, required String password}) async {
+    log("$email $password");
     if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save(); // Save our form now.
       setState(() {
         isShow = true;
       });
       try {
-        final userCrendential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
+        final userCrendential =await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
+         log('Printing the login data.');
+        log('Email: $email');
+        log('Password: $password');
+        log(userCrendential.toString());
         // Check if the user's email is verified
         if (userCrendential.user!.emailVerified) {
           Navigator.pop(context);
@@ -41,10 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacementNamed(context, AppRoutes.verifyEmailScreen);
         }
 
-        print('Printing the login data.');
-        print('Email: $email');
-        print('Password: $password');
-        print(userCrendential);
+       
       } on FirebaseAuthException catch (e) {
         // Handle the exception.
         final errorMessage = e.code.toString();
@@ -72,13 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final GoogleSignInAuthentication gAuth = await gUser!.authentication;
 
     //  create a new credential for user
-    final credential = GoogleAuthProvider.credential(
-        accessToken: gAuth.accessToken, idToken: gAuth.idToken);
+    GoogleAuthProvider.credential(accessToken: gAuth.accessToken, idToken: gAuth.idToken);
 
     //  final lets sign in
     try {
-      final userdata =
-          await FirebaseAuth.instance.signInWithCredential(credential);
       Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
     } on FirebaseAuthException catch (e) {
       final errorMessage = e.code.toString();
@@ -98,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try{
       final LoginResult loginresult = await FacebookAuth.instance.login();
-      final OAuthCredential facebookCrendential = FacebookAuthProvider.credential(loginresult.accessToken!.token);
+      final OAuthCredential facebookCrendential = FacebookAuthProvider.credential(loginresult.accessToken!.tokenString);
       await FirebaseAuth.instance.signInWithCredential(facebookCrendential);
       Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
     }on FirebaseAuthException catch (e){
@@ -177,6 +179,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     return 'password must greater than 5';
                   }
                   return null;
+                },
+                onChanged: (p0) {
+                  password = p0;
                 },
                 onFieldSubmitted: (value) {
                   password = value;
